@@ -1,0 +1,47 @@
+﻿body {
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.taulu {
+    table-layout : fixed;
+    width : 400px;
+}
+
+.nimi2 {
+    width : 200px;
+}
+
+.tuloste {
+    text-align : center;
+    width: 40px;
+}
+
+.varasto {
+    width: 60%;
+    float: left;
+    padding: 15px;
+    background-color: green;
+}
+
+.mukana {
+    width: 40%;
+    float: left;
+    padding: 15px;
+    background-color: lightblue;
+}
+
+ul.checkbox {
+    margin: 0;
+    padding: 0;
+    margin-left: 20px;
+    list-style: none;
+}
+
+    ul.checkbox li {
+        border: 1px transparent solid;
+        display: inline-block;
+        width: 12em;
+    }
