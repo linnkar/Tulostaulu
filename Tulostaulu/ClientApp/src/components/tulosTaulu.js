@@ -3,59 +3,28 @@ import {render} from 'react-dom';
 
 //import  {Table} from 'react-bootstrap';
 import styles from './style.css';
-
-
-const pelaajat = [
-    {
-        etunimi: "Pete",
-        sukunimi: "Piikki",
-        k1: "0",
-        k2: "0",
-        yht: "0",
-        tas: "4",
-        yht2: "0"
-    },
-    {
-        etunimi: "Jari",
-        sukunimi: "Jänne",
-        k1: "0",
-        k2: "0",
-        yht: "0",
-        tas: "8",
-        yht2: "0"
-    },
-    {
-        etunimi: "Saara",
-        sukunimi: "Maila",
-        k1: "0",
-        k2: "0",
-        yht: "0",
-        tas: "4",
-        yht2: "0"
-    }
-];
-
+import paivays from './ApuFunktiot';
 
 class TableRow extends Component {
    constructor (props) {
       super (props);
       this.state = {
-         row : this.props.row
-      };
-      
+          row: this.props.row
+      }; 
    }
 
    laskeTulos (e) {
-      let myRow = this.props.row;
-      let cell = myRow.etunimi+"-yht";
-      let cellTotal = myRow.etunimi+"-yht2";
-      let cellTasoitus = myRow.etunimi+"-tas";
+       let myRow = this.props.row;
+       console.log("Tunnus: " + myRow.Tunnus);
+      let cell = myRow.Nimi+"-yht";
+      let cellTotal = myRow.Nimi+"-yht2";
+      let cellTasoitus = myRow.Nimi+"-tas";
       let scoreLabel = document.getElementById(cell);
       let totalCell = document.getElementById(cellTotal);
       let tasoitusCell = document.getElementById(cellTasoitus);
 
-       let k1 = parseInt(document.getElementById(myRow.etunimi + "-k1").value, 10) || 0;
-       let k2 = parseInt(document.getElementById(myRow.etunimi + "-k2").value, 10) || 0;
+       let k1 = parseInt(document.getElementById(myRow.Nimi + "-k1").value, 10) || 0;
+       let k2 = parseInt(document.getElementById(myRow.Nimi + "-k2").value, 10) || 0;
        scoreLabel.value = k1 + k2;
 
        let tas = parseInt(tasoitusCell.value, 10) || 0;
@@ -70,25 +39,25 @@ class TableRow extends Component {
     render() {
         var rivi = this.props.row;
       return (
-         <tr key={rivi.etunimi+"-row"}>
-            <td key={rivi.etunimi}>
-                  <input type="text" value={rivi.etunimi + " " + rivi.sukunimi}
+         <tr key={rivi.Nimi+"-row"}>
+            <td key={rivi.Nimi}>
+                  <input type="text" value={rivi.Nimi}
                       className="nimi2" readOnly />
             </td>
-            <td key={rivi.etunimi+"k1"}>
-                  <input type="text" id={rivi.etunimi + "-k1"} className="tuloste" onBlur={(e) => this.laskeTulos(e)}/>
+            <td key={rivi.Nimi+"k1"}>
+                  <input type="text" id={rivi.Nimi + "-k1"} className="tuloste" onBlur={(e) => this.laskeTulos(e)}/>
             </td>
-            <td key={rivi.etunimi+"k2"}>
-                  <input type="text" id={rivi.etunimi + "-k2"} className="tuloste" onBlur={(e) => this.laskeTulos(e)}/>
+            <td key={rivi.Nimi+"k2"}>
+                  <input type="text" id={rivi.Nimi + "-k2"} className="tuloste" onBlur={(e) => this.laskeTulos(e)}/>
             </td>
-            <td key={rivi.etunimi+"yht"}>
-                  <input id={rivi.etunimi + "-yht"} type="text" className="tuloste" readOnly/>
+            <td key={rivi.Nimi+"yht"}>
+                  <input id={rivi.Nimi + "-yht"} type="text" className="tuloste" readOnly/>
             </td>
-            <td key={rivi.etunimi+"tas"}>
-                  <input id={rivi.etunimi + "-tas"} type="text" className="tuloste" defaultValue={this.props.row.tas}/>
+            <td key={rivi.Nimi+"tas"}>
+                  <input id={rivi.Nimi + "-tas"} type="text" className="tuloste" defaultValue={this.props.row.Tasoitus}/>
             </td>
-            <td key={rivi.etunimi+"yht2"}>
-                  <input id={rivi.etunimi + "-yht2"} type="text" className="tuloste" readOnly/>
+            <td key={rivi.Nimi+"yht2"}>
+                  <input id={rivi.Nimi + "-yht2"} type="text" className="tuloste" readOnly/>
             </td>
          </tr>
       )
@@ -102,9 +71,12 @@ class Table extends Component {
    }
 
     render() {
+      var paiva = paivays(new Date());
 
       if (this.props.data.length === 0) return (<p>No data</p>)
-      return (
+        return (
+            <div>
+            <h2>{paiva}</h2>
           <table className="taulu">
             <thead>
                <tr>
@@ -117,9 +89,10 @@ class Table extends Component {
                </tr>
             </thead>
             <tbody>
-               {this.props.data.map (row => <TableRow key={row.nimi} row={row}/>)}
+               {this.props.data.map (row => <TableRow key={row.Tunnus} row={row}/>)}
             </tbody>
-         </table>
+                </table>
+                </div>
       );
    }
 }
@@ -128,15 +101,29 @@ export default class MyReactTable extends Component {
    constructor (props) {
       super (props);
        this.state = {
-           data: pelaajat
+           data: []
        };
    }
 
-   
+    componentDidMount() {
+        let reactComp = this;
+        var paiva = paivays(new Date());
+
+        fetch('api/tulokset/v2/mukana/' + paiva)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myjson) {
+                console.log("Myjson: " + JSON.stringify(myjson));
+                reactComp.setState({data: myjson });
+            })
+            .catch((error) => console.log("Error: " + error))
+    }
+  
 
    render() {
       return (
-         <Table data={pelaajat} />
+         <Table data={this.state.data} />
       );
    }
 }

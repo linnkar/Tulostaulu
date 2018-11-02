@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Tulostaulu.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -38,6 +39,48 @@ namespace Tulostaulu.Controllers
             }
 
             return pelissa;
+        }
+
+        // GET api/<controller>/mukana/paiva
+        [HttpGet("v2/mukana/{peliPaiva}")]
+        public List<JObject> GetPelissa(string peliPaiva)
+        {
+            ViikkokisatContext context = new ViikkokisatContext();
+
+            var pelissa = context.Tulokset.Where((t) =>
+             t.Paiva == peliPaiva).ToList();
+            if (pelissa.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("Viikkokilpailua ei löytynyt");
+                return new List<JObject>();
+            }
+
+            // New list of JSON objects which contains tulokset where pelaaja id is changed to real name
+            dynamic tulosLista = new List<JObject>();
+
+            foreach (Tulokset pelaaja in pelissa) {
+
+                dynamic extTulokset = new JObject();
+
+                var nimi = context.Pelaajat.Where((t) =>
+                 t.Tunnus == pelaaja.PelaajaTunnus).ToList();
+                if (nimi.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("Viikkokilpailua ei löytynyt");
+                    nimi[0].Etunimi = "Ei";
+                    nimi[0].Sukunimi = "Löytynyt";
+                }
+
+                extTulokset.Tunnus = pelaaja.Tunnus;
+                extTulokset.K1 = pelaaja.K1;
+                extTulokset.K2 = pelaaja.K2;
+                extTulokset.Tasoitus = pelaaja.Tasoitus;
+                extTulokset.Nimi = nimi[0].Etunimi + " " + nimi[0].Sukunimi;
+
+                tulosLista.Add(extTulokset);
+            };
+
+            return tulosLista;
         }
 
         // GET api/<controller>/koe/id

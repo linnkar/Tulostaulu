@@ -96,10 +96,12 @@ export class Arvonta extends Component {
     }
 
   render() {
+      var paiva = paivays(new Date());
+
       return (
       <div>
               <div>
-                  <h2>Lähtölista</h2>
+              <h2>Lähtölista  {paiva}</h2>
               </div>
               <div className="mukana">
                       <ul className="checkbox">
