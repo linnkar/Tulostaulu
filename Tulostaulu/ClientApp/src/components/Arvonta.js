@@ -28,7 +28,8 @@ export class Arvonta extends Component {
                 })
                 .then(function (myjson) {
                     reactComp.state.mukana.push(myjson[0]);
-                    reactComp.setState({ nimet: true });
+                    //reactComp.setState((state) => ({ mukana:state.mukana.push(myjson[0]) }));
+                    reactComp.setState({luettu : true});
                 })
                 .catch((error) => console.log("Error: " + error))
         });
@@ -52,7 +53,25 @@ export class Arvonta extends Component {
             .catch((error) => console.log("Error: " + error))
 
         this.setState({luettu : true});
-        this.forceUpdate();
+        //this.forceUpdate();
+    }
+
+    seuraavaSivu(e) {
+        this.props.history.push('/tulostaulu');
+    }
+
+    fisherYatesSekoita(vektori) {
+        var koko = vektori.length;
+        if (koko === 0) return false;
+        while (--koko) {
+            var j = Math.floor(Math.random() * (koko + 1));
+            var tmp1 = vektori[koko];
+            var tmp2 = vektori[j];
+            vektori[koko] = tmp2;
+            vektori[j] = tmp1;
+        }
+        this.setState({mukana : vektori});
+        return true;
     }
 
     kasittelePooli(data) {
@@ -65,12 +84,7 @@ export class Arvonta extends Component {
                 Pooli.push(
                     <li key={row.tunnus}>
                         <label>
-                            <input
-                                type="checkbox"
-                                key={row.tunnus}
-                                name={row.tunnus}
-                                onChange={(e) => this.checkboxChange(e)}
-                                value={row.tunnus} />{row.etunimi + " " + row.sukunimi}
+                            {row.etunimi + " " + row.sukunimi}
                         </label>
                     </li>
                 )
@@ -88,14 +102,12 @@ export class Arvonta extends Component {
                   <h2>Lähtölista</h2>
               </div>
               <div className="mukana">
-                  <form>
                       <ul className="checkbox">
                           {this.state.mukana.length >3 && this.kasittelePooli(this.state.mukana)}
                       </ul>
                       <br />
-                      <button>Arvo</button>
-                      <button id="jatka" disabled>Hyväksy</button>
-                  </form>
+                  <button onClick={(e) => this.fisherYatesSekoita(this.state.mukana)}>Arvo</button>
+                  <button id="jatka" onClick={(e) => this.seuraavaSivu(e)}>Hyväksy</button>
               </div>
       </div>
     );

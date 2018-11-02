@@ -40,6 +40,23 @@ namespace Tulostaulu.Controllers
             return pelissa;
         }
 
+        // GET api/<controller>/koe/id
+        [HttpGet("koe/{id}")]
+        public string GetKoe(long id)
+        {
+            ViikkokisatContext context = new ViikkokisatContext();
+
+            var pelissa = context.Pelaajat.Where((t) =>
+             t.Tunnus == id).ToList();
+            if (pelissa.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("Viikkokilpailua ei löytynyt");
+                return " ";
+            }
+
+            return pelissa[0].Etunimi + " " + pelissa[0].Sukunimi;
+        }
+
         // POST api/tulokset/lisaarivi
         [HttpPost ("lisaarivi")]
         public async Task<IActionResult> Post([FromBody] List<Tulokset> tulokset)
