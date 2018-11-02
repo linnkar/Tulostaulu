@@ -1,6 +1,6 @@
 # Tulostaulu
 
-ASP.NET solution to automate result handling of weekly competition in Impivaara minigolf course.
+ASP.NET Core solution to automate result handling of weekly competition in Impivaara minigolf course.
 
 Consists of:
 - Reception
