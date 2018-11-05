@@ -10,29 +10,8 @@ export class Arvonta extends Component {
       super(props);
       this.state = {
           mukana: [],
-          luettu: false,
-          nimet: false,
-          listattu : false
+          jarjestysValmis: false
       };
-      this.lueNimet = this.lueNimet.bind(this);
-    }
-
-    lueNimet(pelissa) {
-        var reactComp = this;
-
-        pelissa.forEach((el) => {
-            //console.log("Tunnus: " + el.pelaajaTunnus)
-            fetch('api/Pelaajat/pelaaja/' + el.pelaajaTunnus) 
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (myjson) {
-                    reactComp.state.mukana.push(myjson[0]);
-                    //reactComp.setState((state) => ({ mukana:state.mukana.push(myjson[0]) }));
-                    reactComp.setState({luettu : true});
-                })
-                .catch((error) => console.log("Error: " + error))
-        });
     }
 
     componentDidMount() {
@@ -40,24 +19,37 @@ export class Arvonta extends Component {
 
         var paiva = paivays(new Date());
 
-        fetch('api/tulokset/mukana/' + paiva)
+        fetch('api/tulokset/v2/mukana/' + paiva)
             .then(function (response) {
                 return response.json();
             })
             .then(function (myjson) {
                 //console.log("Pelissa: " + JSON.stringify(myjson));
-                if (myjson.length > 0) {
-                    reactComp.lueNimet(myjson);
-                }
+                reactComp.setState({ mukana: myjson });
             })
             .catch((error) => console.log("Error: " + error))
 
-        this.setState({luettu : true});
         //this.forceUpdate();
     }
 
+
     seuraavaSivu(e) {
-        this.props.history.push('/tulostaulu');
+        fetch('api/tulokset/lahtojarjestys', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state.mukana)
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log("Response: " + response.status);
+                }
+            })
+            .then(this.props.history.push('/tulostaulu'))
+            .catch((err) => { return err; })
+        
     }
 
     fisherYatesSekoita(vektori) {
@@ -75,19 +67,39 @@ export class Arvonta extends Component {
     }
 
     kasittelePooli(data) {
-        const Pooli = []
+        var Pooli = [];
+        var i = 1;
+        var maara = data.length;
+        var erotin = maara % 3;
 
         if (data.length > 0) {
             //console.log("Data: " + JSON.stringify(data));
             data.map(row => {
                 //console.log("Nimi:" + row.etunimi);
                 Pooli.push(
-                    <li key={row.tunnus}>
+                    <li key={row.Tunnus}>
                         <label>
-                            {row.etunimi + " " + row.sukunimi}
+                            {row.Nimi}
                         </label>
                     </li>
                 )
+                if (i === 2 && maara % 3 === 2) {
+                    Pooli.push(
+                        <li key={row.Nimi}><label>--------------------------------------</label></li>)
+                }
+                else if ((i === 2 || i === 4) && maara % 3 === 1) {
+                    Pooli.push(
+                        <li key={row.Nimi}><label>--------------------------------------</label></li>)
+                }
+                else if ((i === 3) && (maara % 3 === 0)) {
+                    Pooli.push(
+                        <li key={row.Nimi}><label>--------------------------------------</label></li>)
+                }
+                else if ((maara - i) % 3 === 0 && i < maara) {
+                    Pooli.push(
+                        <li key={row.Nimi}><label>--------------------------------------</label></li>)
+                }
+                i++
             }
             )
         }
@@ -101,11 +113,11 @@ export class Arvonta extends Component {
       return (
       <div>
               <div>
-              <h2>Lähtölista  {paiva}</h2>
+              <h2>Lähtölista {paiva}</h2>
               </div>
               <div className="mukana">
                       <ul className="checkbox">
-                          {this.state.mukana.length >3 && this.kasittelePooli(this.state.mukana)}
+                      {this.kasittelePooli(this.state.mukana)}
                       </ul>
                       <br />
                   <button onClick={(e) => this.fisherYatesSekoita(this.state.mukana)}>Arvo</button>

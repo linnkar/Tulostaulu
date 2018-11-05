@@ -17,6 +17,18 @@ namespace Tulostaulu.Controllers
     [ApiController]
     public class TuloksetController : Controller
     {
+
+        public static List<JObject> _LahtoJarjestys { set; get; }
+
+        public class tiedot
+        {
+            public long Tunnus { get; set; }
+            public long K1 { get; set; }
+            public long K2 { get; set; }
+            public long Tasoitus { get; set; }
+            public long Mukana { get; set; }      // Päivitettävä kenttä, 1 = K1, 2= K2, 4 = Tasoitus
+        }
+
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -100,6 +112,28 @@ namespace Tulostaulu.Controllers
             return pelissa[0].Etunimi + " " + pelissa[0].Sukunimi;
         }
 
+        // POST api/tulokset/lahtojarjestys
+        [HttpGet("lahtojarjestys")]
+        public List<JObject> GetLahtojarjestys()
+        {
+            if (_LahtoJarjestys == null || _LahtoJarjestys.Count == 0)
+            {
+                return new List<JObject>();
+            }
+
+            return _LahtoJarjestys;
+        }
+
+        // POST api/tulokset/lahtojarjestys
+        [HttpPost ("lahtojarjestys")]
+        public IActionResult PostLahtojarjestys ([FromBody] List<JObject>jarjestys)
+        {
+            _LahtoJarjestys = jarjestys;
+
+            return Ok(_LahtoJarjestys.Count );
+        }
+
+
         // POST api/tulokset/lisaarivi
         [HttpPost ("lisaarivi")]
         public async Task<IActionResult> Post([FromBody] List<Tulokset> tulokset)
@@ -148,6 +182,40 @@ namespace Tulostaulu.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
+        }
+
+        // PUT api/tulokset/paivita
+        [HttpPut("paivita")]
+        public IActionResult PutTulos ([FromBody] tiedot tulos)
+        {
+            ViikkokisatContext context = new ViikkokisatContext();
+            string ominaisuus = "";
+
+            var uusitulos = new Tulokset { Tunnus = tulos.Tunnus };
+            if (tulos.Mukana == 1)
+            {
+                uusitulos.K1 = tulos.K1;
+                ominaisuus = "K1";
+            }
+            else if (tulos.Mukana == 2)
+            {
+                uusitulos.K2 = tulos.K2;
+                ominaisuus = "K2";
+            }
+            else if (tulos.Mukana == 4)
+            {
+                uusitulos.Tasoitus = tulos.Tasoitus;
+                ominaisuus = "Tasoitus";
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            context.Entry(uusitulos).Property(ominaisuus).IsModified = true;
+            context.SaveChanges();
+
+            return Ok();
         }
 
         // DELETE api/<controller>/5

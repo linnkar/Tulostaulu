@@ -5,7 +5,7 @@ import { Home } from './components/Home';
 import { LisaaPelaaja } from './components/LisaaPelaaja';
 import { Osallistujat } from './components/Osallistujat';
 import { Arvonta } from './components/Arvonta';
-import MyReactTable from './components/tulosTaulu';
+import MyReactTable  from './components/tulosTaulu';
 
 export default class App extends Component {
   displayName = App.name

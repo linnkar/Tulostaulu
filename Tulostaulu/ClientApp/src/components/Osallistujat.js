@@ -70,12 +70,12 @@ export class Osallistujat extends Component {
                         console.log("Response: " + response.text())
                     }
                 })
+                .then(this.props.history.push('/Arvonta'))
                 .catch((error) => console.log(error))
 
         
         pelaavat = [];
-       // move to next page
-        this.props.history.push('/Arvonta');
+
    }
 
    checkboxChange (event) {
