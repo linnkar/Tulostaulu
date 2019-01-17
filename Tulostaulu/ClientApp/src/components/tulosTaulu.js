@@ -95,9 +95,9 @@ class TableRow extends Component {
        this.setState({row:myRow});
    }
 
-
     render() {
         var rivi = this.props.row;
+
       return (
          <tr key={rivi.Nimi+"-row"}>
             <td key={rivi.Nimi}>
