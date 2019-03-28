@@ -9,33 +9,20 @@ export class NavMenu extends Component {
 
   render() {
     return (
-      <Navbar inverse fixedTop fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to={'/'}>Tulostaulu</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
-            <LinkContainer to={'/'} exact>
-              <NavItem>
-                <Glyphicon glyph='home' /> Home
-              </NavItem>
-            </LinkContainer>
-            <LinkContainer to={'/lisaapelaaja'}>
-              <NavItem>
-                <Glyphicon glyph='th-list' /> Lisää pelaaja
-              </NavItem>
-            </LinkContainer>
-            <LinkContainer to={'/reception'}>
-              <NavItem>
-                <Glyphicon glyph='th-list' /> Ilmoittautuminen
-              </NavItem>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+                <img src="./../../public/turgs.png" width="30" height="30" alt=""></img>
+                Tulostaulu
+            </a>
+            <div class="collapse navbar-collapse" id="navBarNav">
+                <div class="navbar-nav bg-danger">
+                    <a class="nav-item nav-link active" href="#">Ilmoittautuminen</a>
+                    <a class="nav-item nav-link" href="/arvonta">Arvonta</a>
+                    <a class="nav-item nav-link" href="/tulostaulu">Tulostaulu</a>
+                    <a class="nav-item nav-link" href="/lisaapelaaja">Lisää pelaaja</a>
+                </div>
+            </div>
+        </nav>
     );
   }
 }

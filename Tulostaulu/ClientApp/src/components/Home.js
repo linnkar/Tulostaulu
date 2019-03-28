@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MyReactTable from './tulosTaulu';
+import Osallistujat from './Osallistujat';
 
 export class Home extends Component {
   displayName = Home.name
@@ -7,7 +7,7 @@ export class Home extends Component {
   render() {
     return (
       <div>
-        <MyReactTable />
+        <Osallistujat />
       </div>
     );
   }

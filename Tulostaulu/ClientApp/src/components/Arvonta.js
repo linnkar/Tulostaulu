@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import paivays from './ApuFunktiot';
 import styles from './style.css';
@@ -10,7 +11,7 @@ export class Arvonta extends Component {
       super(props);
       this.state = {
           mukana: [],
-          jarjestysValmis: false
+          valmis: false
       };
     }
 
@@ -47,7 +48,7 @@ export class Arvonta extends Component {
                     console.log("Response: " + response.status);
                 }
             })
-            .then(this.props.history.push('/tulostaulu'))
+            .then(this.setState({valmis : true}))
             .catch((err) => { return err; })
         
     }
@@ -109,6 +110,10 @@ export class Arvonta extends Component {
 
   render() {
       var paiva = paivays(new Date());
+
+      if (this.state.valmis == true) {
+          return <Redirect to='/tulosTaulu' />
+      }
 
       return (
       <div>

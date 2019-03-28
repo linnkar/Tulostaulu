@@ -11,11 +11,11 @@
     color: white;
 }
 
-@media (min-width: 768px) {
+@media screen and (max-width: 1540px) {
     /* On large screens, convert the nav menu to a vertical sidebar */
     .navbar {
         height: 100%;
-        width: calc(25% - 20px);
+        width: auto;
     }
     .navbar {
         border-radius: 0;
@@ -33,7 +33,7 @@
         padding: 0;
         margin: 0;
     }
-    .navbar .container-fluid .navbar-brand {
+    .navbar .container-fluid {
         margin: 0;
     }
     .navbar ul {
@@ -48,6 +48,12 @@
         padding: 10px 16px;
         border-radius: 4px;
     }
+
+    .navbar a.navbar-brand {
+        width: 60px;
+        margin: 0;
+    }
+
     .navbar a {
         /* If a menu item's text is too long, truncate it */
         width: 100%;
@@ -55,4 +61,5 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
 }

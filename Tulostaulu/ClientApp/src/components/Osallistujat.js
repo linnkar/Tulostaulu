@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import {render} from 'react-dom';
+import { render } from 'react-dom';
+import { Redirect } from 'react-router-dom';
+import { NavMenu } from './NavMenu';
 
 import styles from './style.css';
 import paivays from './ApuFunktiot';
@@ -8,12 +10,13 @@ var pelaajat = [];
 var pelaavat = [];
 
 
-export class Osallistujat extends Component {
+export default class Osallistujat extends Component {
    constructor (props) {
       super (props)
       this.state = {
-         kaikki  : pelaajat,
-         pelissa : pelaavat
+          kaikki  : pelaajat,
+          pelissa : pelaavat,
+          valmis : false,
       }
       this.handleSubmit = this.handleSubmit.bind(this);
    }
@@ -57,20 +60,20 @@ export class Osallistujat extends Component {
             pelaajanTulos.push(tulosrivi);
         })
 
-            fetch('api/tulokset/lisaarivi', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(pelaajanTulos)
+        fetch('api/tulokset/lisaarivi', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pelaajanTulos)
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log("Response: " + response.text())
+                }
             })
-                .then((response) => {
-                    if (response.ok) {
-                        console.log("Response: " + response.text())
-                    }
-                })
-                .then(this.props.history.push('/Arvonta'))
+            .then(this.setState({valmis : true}))
                 .catch((error) => console.log(error))
 
         
@@ -130,8 +133,11 @@ export class Osallistujat extends Component {
    }
 
    render () {
+       if (this.state.valmis == true) {
+           return <Redirect to='/Arvonta' />
+       }
 
-      return (
+       return (
          <div>  
             <div><h2>Ilmoittautuminen</h2></div>
             <div className="varasto"><h3>Poissa</h3>
@@ -153,5 +159,3 @@ export class Osallistujat extends Component {
       );
     }
 }
-
-export default Osallistujat.kasittelePooli;
