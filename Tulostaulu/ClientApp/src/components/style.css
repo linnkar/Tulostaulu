@@ -23,14 +23,13 @@
     width: 60%;
     float: left;
     padding: 15px;
-    background-color: green;
 }
 
 .mukana {
     width: 40%;
     float: left;
     padding: 15px;
-    background-color: lightblue;
+    background-color: #edf2f6;
 }
 
 ul.checkbox {
@@ -45,3 +44,16 @@ ul.checkbox {
         display: inline-block;
         width: 12em;
     }
+
+.osallistujanappi {
+    margin-left: 40px;
+}
+
+.tasoitusleima {
+    margin-left: 5px;
+}
+
+.tasoitusleima2 {
+    margin-top:  8px;
+    margin-left: 5px;
+}

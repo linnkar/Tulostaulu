@@ -122,7 +122,7 @@ export default class Osallistujat extends Component {
                      key={row.tunnus} 
                      name={row.tunnus} 
                      onChange={(e) => this.checkboxChange(e)}
-                     value={row.tunnus}/>{row.etunimi + " "  + row.sukunimi}
+                     value={row.tunnus}/> { row.etunimi + " "  + row.sukunimi}
                </label>
                </li>
          )

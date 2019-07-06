@@ -7,8 +7,12 @@
 .navbar .navbar-nav .active a:hover,
 .navbar .navbar-nav .active a:focus {
     background-image: none;
-    background-color: #4189C7;
+    background-color: #006666;
     color: white;
+}
+
+.turgsvari {
+    background-color: #006666;
 }
 
 @media screen and (max-width: 1540px) {
@@ -21,6 +25,7 @@
         border-radius: 0;
         border-width: 0;
         height: 100%;
+        background-color:aqua;
     }
     .navbar-header {
         float: none;
